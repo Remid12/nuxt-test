@@ -1,34 +1,28 @@
-const fetchApiData = async (url: string, options?: Record<string, any>) => {
-  try {
-    const data = await $fetch(url, options);
-
-    return { data, error: null };
-  } catch (err) {
-    console.error(`Unexpected error fetching data from ${url}:`, err);
-    return { data: null, error: err };
-  }
-};
+// moviesStore.ts
+import { defineStore } from "pinia";
 
 export const useMoviesStore = defineStore("movies-store", () => {
   const getPopularMovies = async () => {
-    return await fetchApiData("/api/popular", {
-      method: "GET",
-    });
+    return await $fetch("/api/popular");
   };
 
   const getRecentsMovies = async () => {
-    return await fetchApiData("/api/discover", {
-      method: "GET",
+    return await $fetch("/api/discover", {
+      params: {
+        "primary_release_date.gte": "2024-11-20",
+        "primary_release_date.lte": "2024-11-20",
+        sort_by: "popularity.desc",
+        with_release_type: "2|3",
+      },
     });
   };
 
   const searchMovies = async (query: string) => {
-    // Construire l'URL avec le paramètre de recherche
-    const url = `/api/search?query=${encodeURIComponent(query)}`;
-
-    // Appeler fetchApiData avec l'URL modifiée
-    return await fetchApiData(url, {
-      method: "GET",
+    return await $fetch("/api/search", {
+      params: {
+        query,
+        language: "fr-FR",
+      },
     });
   };
 

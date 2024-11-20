@@ -6,16 +6,11 @@ const initialValues = ref({
 const searchResult = ref("");
 
 const resolver = ({ values }) => {
-  const errors = {};
+  const errors = [];
+  const validationErrors = useValidateMovieName(values.movieName);
 
-  if (!values.movieName) {
-    errors.movieName = [{ message: "movieName is required." }];
-  }
-
-  if (values.movieName.length < 3) {
-    errors.movieName = [
-      { message: "the name must be at least 3 characters long." },
-    ];
+  if (validationErrors.length > 0) {
+    errors.movieName = validationErrors;
   }
 
   return {
@@ -47,7 +42,9 @@ const resolver = ({ values }) => {
           severity="error"
           size="small"
           variant="simple"
-          >{{ $form.movieName.error?.message }}</Message
+          >
+          {{ $form.movieName.error?.message }}
+          </Message
         >
       </div>
     </Form>

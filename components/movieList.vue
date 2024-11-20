@@ -24,19 +24,20 @@ const fetchMovies = async () => {
         movies.value = [];
         return;
       }
+
       response = await moviesStore.searchMovies(props.search);
     } else {
       response = await moviesStore.getRecentsMovies();
     }
 
-    console.log(response)
+    console.log(response);
 
     if (response.error) {
       hasError.value = true;
       movies.value = [];
     } else {
       hasError.value = false;
-      movies.value = props.isSearch ? response.data.results : response.data;
+      movies.value = response.results;
     }
   } catch (err) {
     hasError.value = true;

@@ -5,15 +5,6 @@ const prop = defineProps({
     required: true,
   },
 });
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString); // Convertir la chaîne en objet Date
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(date);
-};
 </script>
 
 <template>
@@ -34,7 +25,7 @@ const formatDate = (dateString) => {
     <template #subtitle>
       <div class="flex gap-3 justify-between">
         <span v-if="movie.release_date">
-          {{ formatDate(movie.release_date) }}
+          {{ useFormatDate(movie.release_date) }}
         </span>
 
         <span v-if="movie.vote_average.toFixed(1) > 0">

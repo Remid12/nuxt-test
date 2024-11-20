@@ -1,54 +1,25 @@
-interface Movie {
-  adult: boolean;
-  backdrop_path: string | null;
-  genre_ids: number[];
-  id: number;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string | null;
-  release_date: string;
-  title: string;
-  video: boolean;
-  vote_average: number;
-  vote_count: number;
-}
+import { useFetchMovies } from "@/composables/useFetchMovies";
 
-interface ApiResponse {
-  page: number;
-  results: Movie[];
-  total_pages: number;
-  total_results: number;
-}
-
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   try {
-    const config = useRuntimeConfig();
-    const apiKey = config.apiKey;
+    const data = await useFetchMovies("discover/movie", {
+      "primary_release_date.gte": "2024-11-18",
+      "primary_release_date.lte": "2024-11-22",
+      sort_by: "popularity.desc",
+      with_release_type: "2|3",
+      language: "fr-FR",
+      region: "BE",
+    });
 
-    const data = await $fetch<ApiResponse>(
-      "https://api.themoviedb.org/3/discover/movie",
-      {
-        params: {
-          api_key: apiKey,
-          language: "fr-FR",
-          region: "BE",
-          "primary_release_date.gte": "2024-11-20",
-          "primary_release_date.lte": "2024-11-20",
-          sort_by: "popularity.desc",
-          with_release_type: "2|3",
-        },
-      }
-    );
+    if (data.error) {
+      throw createError({
+        statusCode: 500,
+        message: "Failed to fetch movies",
+        data: data.error,
+      });
+    }
 
-    const filteredResults = data.results.filter(
-      (movie) => movie.release_date === "2024-11-20"
-    );
-
-    console.log(filteredResults);
-
-    return filteredResults;
+    return data.data;
   } catch (error) {
     throw createError({
       statusCode: 500,
