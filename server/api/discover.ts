@@ -1,15 +1,17 @@
 import { useFetchMovies } from "@/composables/useFetchMovies";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
-    const data = await useFetchMovies("discover/movie", {
-      "primary_release_date.gte": "2024-11-18",
-      "primary_release_date.lte": "2024-11-22",
-      sort_by: "popularity.desc",
-      with_release_type: "2|3",
-      language: "fr-FR",
-      region: "BE",
-    });
+    const query = getQuery(event);
+
+    if (!query) {
+      throw createError({
+        statusCode: 400,
+        message: "Query parameter is required",
+      });
+    }
+
+    const data = await useFetchMovies("discover/movie", query);
 
     if (data.error) {
       throw createError({

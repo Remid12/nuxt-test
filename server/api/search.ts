@@ -1,4 +1,4 @@
-import { useFetchMovies } from '@/composables/useFetchMovies';
+import { useFetchMovies } from "@/composables/useFetchMovies";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    const data = await useFetchMovies('search/movie', {
+    const data = await useFetchMovies("search/movie", {
       query,
       language: "fr-FR",
     });

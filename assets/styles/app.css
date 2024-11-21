@@ -15,3 +15,7 @@ body {
     }
   }
 }
+
+:root {
+  --p-primary-color: #8a8a8a;
+}
